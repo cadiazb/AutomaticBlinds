@@ -12,14 +12,20 @@ from getSunTimes import getSunriseTime, getSunsetTime
 sunriseTime = getSunriseTime()
 sunsetTime = getSunsetTime()
 
+#Create clean cron job file from default file
 subprocess.check_output("cp defaultCron todaysCron", shell = True)
+
+#Add cron job to run this script first thing in the morning
+subprocess.check_output("""echo "5 0 * * * python /home/camilo/Github/AutomaticBlinds/cronJobs/createCronjob.py" >> todaysCron""", shell = True)
+
+#Get sunrise time and add cron job
 cronCommand = """echo "%i %i * * * echo Sun is rising" >> todaysCron""" % (sunriseTime[1], sunriseTime[0])
-print cronCommand 
 subprocess.check_output(cronCommand, shell = True)
 
+#Get sunset time and add cron job
 cronCommand = """echo "%i %i * * * echo Sun is setting" >> todaysCron""" % (sunsetTime[1], sunsetTime[0])
-print cronCommand
 subprocess.check_output(cronCommand, shell = True)
 
+#Create cron job from new file and delete temp file
 subprocess.check_output("crontab todaysCron", shell = True)
 subprocess.check_output("rm todaysCron", shell = True)
