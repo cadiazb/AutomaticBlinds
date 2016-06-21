@@ -12,20 +12,25 @@ from getSunTimes import getSunriseTime, getSunsetTime
 sunriseTime = getSunriseTime()
 sunsetTime = getSunsetTime()
 
+#cd to correct folder
+scriptFolder = '/home/camilo/Github/AutomaticBlinds/cronJobs/'
+
 #Create clean cron job file from default file
-subprocess.check_output("cp defaultCron todaysCron", shell = True)
+CMD = 'cp ' + scriptFolder + 'defaultCron ' + scriptFolder + 'todaysCron'
+subprocess.check_output(CMD, shell = True)
 
 #Add cron job to run this script first thing in the morning
-subprocess.check_output("""echo "5 0 * * * python /home/camilo/Github/AutomaticBlinds/cronJobs/createCronjob.py" >> todaysCron""", shell = True)
+CMD = 'echo "5 0 * * * python /home/camilo/Github/AutomaticBlinds/cronJobs/createCronjob.py" >> ' + scriptFolder + 'todaysCron'
+subprocess.check_output(CMD, shell = True)
 
 #Get sunrise time and add cron job
-cronCommand = """echo "%i %i * * * echo Sun is rising" >> todaysCron""" % (sunriseTime[1], sunriseTime[0])
-subprocess.check_output(cronCommand, shell = True)
+CMD = 'echo "%i %i * * * echo Sun is rising" >> ' % (sunriseTime[1], sunriseTime[0]) + scriptFolder + """todaysCron"""
+subprocess.check_output(CMD, shell = True)
 
 #Get sunset time and add cron job
-cronCommand = """echo "%i %i * * * echo Sun is setting" >> todaysCron""" % (sunsetTime[1], sunsetTime[0])
-subprocess.check_output(cronCommand, shell = True)
+CMD = 'echo "%i %i * * * echo Sun is setting" >> ' % (sunsetTime[1], sunsetTime[0]) + scriptFolder + """todaysCron"""
+subprocess.check_output(CMD, shell = True)
 
 #Create cron job from new file and delete temp file
-subprocess.check_output("crontab todaysCron", shell = True)
-subprocess.check_output("rm todaysCron", shell = True)
+subprocess.check_output("crontab " + scriptFolder + "todaysCron", shell = True)
+subprocess.check_output("rm " + scriptFolder + "todaysCron", shell = True)
